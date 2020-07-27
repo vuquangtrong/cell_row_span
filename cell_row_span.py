@@ -133,7 +133,9 @@ class CellRowSpanExtension(Extension):
     # Table blocks found by the block processor. Because we need to share the
     # list between the block and the tree processors, we make it a property of
     # the extension itself.
-    table_blocks = []
+    def __init__(self, *args, **kw):
+        Extension.__init__(self, *args, **kw)
+        self.table_blocks = []
 
     def extendMarkdown(self, md, md_globals):
         """ Add our block and tree processors """
