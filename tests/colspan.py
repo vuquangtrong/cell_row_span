@@ -35,7 +35,3 @@ class colspan(TestCase):
         self.assertMarkdownRenders(src, exp, output_format="html",
                                    extensions=['tables',
                                                CellRowSpanExtension()])
-
-
-# class (TestCase, colspan):
-#     pass

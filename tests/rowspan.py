@@ -2,13 +2,13 @@ from markdown.test_tools import TestCase
 from cell_row_span import CellRowSpanExtension
 
 
-class colspan(TestCase):
+class rowspan(TestCase):
     def runTest(self):
         src = self.dedent("""
         c11 | c12 | c13
         ----|-----|-----
-        c21      || c22
-        c31 | c32 | c33
+        c21 | c22 | c23
+        c31 |_   _| c32
         """)
         exp = self.dedent("""
         <table>
@@ -21,13 +21,13 @@ class colspan(TestCase):
         </thead>
         <tbody>
         <tr>
-        <td colspan="2">c21</td>
-        <td>c22</td>
+        <td>c21</td>
+        <td rowspan="2">c22</td>
+        <td>c23</td>
         </tr>
         <tr>
         <td>c31</td>
         <td>c32</td>
-        <td>c33</td>
         </tr>
         </tbody>
         </table>
@@ -35,7 +35,3 @@ class colspan(TestCase):
         self.assertMarkdownRenders(src, exp, output_format="html",
                                    extensions=['tables',
                                                CellRowSpanExtension()])
-
-
-# class (TestCase, colspan):
-#     pass
