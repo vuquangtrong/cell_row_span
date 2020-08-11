@@ -270,7 +270,7 @@ class CellRowSpanTreeProcessor(Treeprocessor):
                 # Check for spanned rows
                 td_index = 0
                 for td in tr:
-                    if self.RE_row_span_marker.match(td.text):
+                    if (td.text is not None) and self.RE_row_span_marker.match(td.text):
                         self._update_rowspan_attrib(tbody, tr_index,
                                                     td_index, td_remove)
                     td_index += 1
