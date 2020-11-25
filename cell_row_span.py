@@ -105,6 +105,21 @@ a backslash ("\\") to avoid problems:
 
     . + * | ? $ ( ) [ ] { }
 
+### Modification
+
+To consider any cell that match \s*~~\s*$ in the content as an adjacent cell to merge column.
+To support table formatter which automatically changes the cell content to align column.
+
+|         Column 1          | Col 2 | Big row span     |
+| :-----------------------: | ----- | ---------------- |
+|          expaned                 || expaned          | ; supported
+|        not expaned        |       |                  | 
+|          expaned               |~~|                  | ; modification for Python 2.6
+|          expaned          | ~~    |                  | ; modification for formatted table
+|          expaned          | r2_c2 |                  |
+| _                       _ | r3_c2 |                  |
+|                           | r4_c2 | _              _ |
+
 Usage: See Extensions for general extension usage. Use 'cell_row_span' as the
 name of the extension. You must include the 'tables' extension *before* this
 one, or this extension will not be run.
@@ -171,7 +186,8 @@ class CellRowSpanBlockProcessor(BlockProcessor):
 class CellRowSpanTreeProcessor(Treeprocessor):
     """ Add cell and row spans to table as needed """
 
-    RE_adjacent_bars = re.compile(r'\|(~~)?\|')
+    RE_adjacent_bars = re.compile(r'\|\||\|\s*~~\s*\|')
+    RE_adjacent_cell = re.compile(r'\s*~~\s*$')
     # ... Colonel Mustard in the Library? ;)
     RE_remove_lead_pipe = re.compile(r'^ *\|')
     RE_row_span_marker = re.compile(r'^_[_^= ]*_$')
@@ -191,7 +207,7 @@ class CellRowSpanTreeProcessor(Treeprocessor):
         td_last_active_index = 0
 
         for c in text.split('|'):
-            if len(c) == 0 or c == '~~':
+            if len(c) == 0 or c == '~~' or self.RE_adjacent_cell.match(c):
                 try:
                     #  Update 'colspan' on previous cell
                     td = tr[td_last_active_index]
